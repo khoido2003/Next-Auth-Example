@@ -22,7 +22,6 @@ export default function RootLayout({
       <body className={cn("bg-background", inter.className)}>
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
           <Navbar />
-
           {children}
         </ThemeProvider>
       </body>

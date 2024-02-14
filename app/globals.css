@@ -8,6 +8,32 @@ body,
   height: 100%;
 }
 
+/* Draw line */
+.authorize {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+}
+
+.authorize::before,
+.authorize::after {
+  content: "";
+  height: 1px;
+  flex: 1;
+  background-color: #d4d4d456;
+}
+
+/* ///////////////////////////////////// */
+
+/* Reusable style */
+
+.active-link {
+  @apply text-xs hover:underline text-muted-foreground hover:text-foreground hover:font-semibold;
+}
+
+/* ////////////////////////////////////// */
+
 @layer base {
   :root {
     --background: 0 0% 100%;
