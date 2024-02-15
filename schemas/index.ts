@@ -13,3 +13,25 @@ export const LoginSchema = z.object({
 });
 
 //////////////////////////////////////////////
+
+// Register form
+export const RegisterSchema = z
+  .object({
+    email: z.string().email({
+      message: "Email is required!",
+    }),
+    password: z
+      .string()
+      .min(8, { message: "Password must be at least 8 characters!" }),
+
+    passwordConfirm: z
+      .string()
+      .min(8, { message: "Password must be at least 8 characters" }),
+
+    name: z.string().min(1, {
+      message: "Name is required!",
+    }),
+  })
+  .refine((data) => data.password !== data.passwordConfirm, {
+    message: "Password don't match!",
+  });

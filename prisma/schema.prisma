@@ -11,7 +11,67 @@ datasource db {
   directUrl = env("DIRECT_URL")
 }
 
+///////////////////////////////////////////
 
+// To sychronize the database from schema to prisma use one of the following options:
 
+// npx prisma db push
+// npx prisma migrate dev
+// npx prisma migrate dev --name init (If run the schema fist time then use this)
 
+// 1. npx prisma db push:
 
+// This command directly synchronizes your Prisma schema with your database, without generating any migration files.
+// It applies all changes immediately, potentially overwriting existing data if not careful.
+// Best suited for prototyping and local development where data persistence isn't crucial.
+// Not recommended for production environments due to potential data loss.
+
+//----------------------------------------------------
+
+// 2. npx prisma migrate dev --name init:
+
+// This command creates migration files that represent the changes between your Prisma schema and the database schema.
+// These migration files allow you to version control your schema changes and apply them selectively, ensuring data safety.
+// Ideal for development and production environments where tracking and managing schema changes is essential.
+// The --name init flag initializes the migration history, creating the first migration file.
+
+/////////////////////////////////////////
+
+enum UserRole {
+  ADMIN
+  USER
+}
+
+model User {
+  id            String    @id @default(cuid())
+  name          String?
+  email         String?   @unique
+  emailVerified DateTime?
+  image         String?
+  password      String?
+
+  account Account[]
+  role    UserRole  @default(USER)
+}
+
+model Account {
+  id     String @id @default(cuid())
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  type              String
+  provider          String
+  providerAccountId String
+
+  // String only have 256 character so using @db.Text to make sure the case with potentially large amounts of text, where the fixed-length limit of String might be exceeded. This ensures appropriate storage and efficient operations on larger text content.
+  refresh_token String? @db.Text
+  access_token  String? @db.Text
+  id_token      String? @db.Text
+
+  expires_at    Int?
+  token_type    String?
+  scope         String?
+  session_state String?
+
+  @@unique([provider, providerAccountId])
+}
