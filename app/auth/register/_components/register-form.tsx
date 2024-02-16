@@ -20,10 +20,13 @@ import { CardWrapper } from "@/components/card-wrapper";
 import { Button } from "@/components/ui/button";
 import { EyeClosedIcon, EyeOpenIcon } from "@radix-ui/react-icons";
 
+import { register } from "@/actions/register";
+import { toast } from "sonner";
+
+/////////////////////////////////////////////
+
 export const RegisterForm = () => {
   const [showPassword, setShowPassword] = useState(false);
-  const [error, setError] = useState<string | undefined>("");
-  const [success, setSuccess] = useState<string | undefined>("");
 
   const [isPending, startTransition] = useTransition();
 
@@ -37,16 +40,28 @@ export const RegisterForm = () => {
     },
   });
 
+  const onSubmit = (values: z.infer<typeof RegisterSchema>) => {
+    startTransition(() => {
+      register(values).then((data) => {
+        data.error && toast.error(`Error: ${data.error}`);
+        data.success && toast.success(`Success: ${data.success}`);
+      });
+    });
+
+    values.password = "";
+    values.passwordConfirm = "";
+  };
+
   return (
     <CardWrapper
       headerTitle="Sign up"
       headerLabel="Crafting secure and delightful login experiences"
-      backButtonLabel="Already have an account"
+      backButtonLabel="Already have an account?"
       backButtonHref="/auth/login"
       showSocial
     >
       <Form {...form}>
-        <form className="space-y-4" onSubmit={form.handleSubmit(() => {})}>
+        <form className="space-y-4" onSubmit={form.handleSubmit(onSubmit)}>
           <FormField
             control={form.control}
             name="name"
@@ -54,8 +69,14 @@ export const RegisterForm = () => {
               return (
                 <FormItem>
                   <FormControl>
-                    <Input {...field} placeholder="Name" type="text" />
+                    <Input
+                      {...field}
+                      disabled={isPending}
+                      placeholder="Name"
+                      type="text"
+                    />
                   </FormControl>
+                  <FormMessage />
                 </FormItem>
               );
             }}
@@ -68,8 +89,14 @@ export const RegisterForm = () => {
               return (
                 <FormItem>
                   <FormControl>
-                    <Input {...field} placeholder="Email" type="email" />
+                    <Input
+                      {...field}
+                      placeholder="Email"
+                      type="email"
+                      disabled={isPending}
+                    />
                   </FormControl>
+                  <FormMessage />
                 </FormItem>
               );
             }}
@@ -87,6 +114,7 @@ export const RegisterForm = () => {
                         {...field}
                         placeholder="Password"
                         type={showPassword ? "text" : "password"}
+                        disabled={isPending}
                       />
 
                       <span
@@ -103,6 +131,7 @@ export const RegisterForm = () => {
                       </span>
                     </div>
                   </FormControl>
+                  <FormMessage />
                 </FormItem>
               );
             }}
@@ -120,6 +149,7 @@ export const RegisterForm = () => {
                         {...field}
                         placeholder="Repeat Password"
                         type={showPassword ? "text" : "password"}
+                        disabled={isPending}
                       />
 
                       <span
@@ -136,12 +166,17 @@ export const RegisterForm = () => {
                       </span>
                     </div>
                   </FormControl>
+                  <FormMessage />
                 </FormItem>
               );
             }}
           />
 
-          <Button variant="login">Create an account</Button>
+          <div className="pt-4">
+            <Button type="submit" disabled={isPending} variant="login">
+              Create an account
+            </Button>
+          </div>
         </form>
       </Form>
     </CardWrapper>

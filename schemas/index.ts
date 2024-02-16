@@ -32,6 +32,7 @@ export const RegisterSchema = z
       message: "Name is required!",
     }),
   })
-  .refine((data) => data.password !== data.passwordConfirm, {
+  .refine((data) => data.password === data.passwordConfirm, {
     message: "Password don't match!",
+    path: ["passwordConfirm"],
   });

@@ -19,11 +19,11 @@ import { Input } from "@/components/ui/input";
 import { CardWrapper } from "@/components/card-wrapper";
 import { Button } from "@/components/ui/button";
 import { EyeClosedIcon, EyeOpenIcon } from "@radix-ui/react-icons";
+import { login } from "@/actions/login";
+import { toast } from "sonner";
 
 export const LoginForm = () => {
   const [showPassword, setShowPassword] = useState(false);
-  const [error, setError] = useState<string | undefined>("");
-  const [success, setSuccess] = useState<string | undefined>("");
 
   const [isPending, startTransition] = useTransition();
 
@@ -35,6 +35,26 @@ export const LoginForm = () => {
     },
   });
 
+  const onSubmit = (values: z.infer<typeof LoginSchema>) => {
+    startTransition(() => {
+      console.log(values);
+      login(values)
+        .then((data) => {
+          if (data?.error) {
+            form.reset();
+            toast.error(`Error: ${data.error}`);
+          }
+          if (data?.success) {
+            form.reset();
+            toast.success(`Success: ${data.success}`);
+          }
+        })
+        .catch((error) => {
+          toast.error(`Error: Something went wrong`);
+        });
+    });
+  };
+
   return (
     <CardWrapper
       headerTitle="Login"
@@ -45,7 +65,7 @@ export const LoginForm = () => {
       login
     >
       <Form {...form}>
-        <form className="space-y-4" onSubmit={form.handleSubmit(() => {})}>
+        <form className="space-y-4" onSubmit={form.handleSubmit(onSubmit)}>
           <FormField
             control={form.control}
             name="email"
@@ -53,8 +73,14 @@ export const LoginForm = () => {
               return (
                 <FormItem>
                   <FormControl>
-                    <Input {...field} placeholder="Email" type="email" />
+                    <Input
+                      {...field}
+                      placeholder="Email"
+                      type="email"
+                      disabled={isPending}
+                    />
                   </FormControl>
+                  <FormMessage />
                 </FormItem>
               );
             }}
@@ -72,6 +98,7 @@ export const LoginForm = () => {
                         {...field}
                         placeholder="Password"
                         type={showPassword ? "text" : "password"}
+                        disabled={isPending}
                       />
 
                       <span
@@ -88,12 +115,17 @@ export const LoginForm = () => {
                       </span>
                     </div>
                   </FormControl>
+                  <FormMessage />
                 </FormItem>
               );
             }}
           />
 
-          <Button variant="login">Login</Button>
+          <div className="pt-4">
+            <Button disabled={isPending} type="submit" variant="login">
+              Login
+            </Button>
+          </div>
         </form>
       </Form>
     </CardWrapper>
