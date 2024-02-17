@@ -1,7 +1,7 @@
 import type { NextAuthConfig } from "next-auth";
 import bcrypt from "bcryptjs";
 
-import GitHub from "next-auth/providers/github";
+import Github from "next-auth/providers/github";
 import Google from "next-auth/providers/google";
 import Credentials from "next-auth/providers/credentials";
 
@@ -12,6 +12,18 @@ import { getUserByEmail } from "./data/user";
 
 export default {
   providers: [
+    Google({
+      clientId: process.env.GOOGLE_CLIENT_ID,
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+      allowDangerousEmailAccountLinking: true,
+    }),
+
+    Github({
+      clientId: process.env.GITHUB_CLIENT_ID,
+      clientSecret: process.env.GITHUB_CLIENT_SECRET,
+      allowDangerousEmailAccountLinking: true,
+    }),
+
     Credentials({
       async authorize(credentials, req) {
         // Check Email and password submitted by user through https

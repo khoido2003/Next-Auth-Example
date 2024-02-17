@@ -1,12 +1,12 @@
 "use server";
 
 import { AuthError } from "next-auth";
+import { signIn } from "@/auth";
 
 import * as z from "zod";
 import { LoginSchema } from "@/schemas";
 
 import { getUserByEmail } from "@/data/user";
-import { signIn } from "@/auth";
 import { DEFAULT_LOGIN_REDIRECT } from "@/routes";
 
 export const login = async (values: z.infer<typeof LoginSchema>) => {

@@ -5,7 +5,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { LoginSchema } from "@/schemas";
 
 import { useForm } from "react-hook-form";
-import { useState, useTransition } from "react";
+import { useEffect, useState, useTransition } from "react";
 
 import {
   Form,
@@ -21,11 +21,24 @@ import { Button } from "@/components/ui/button";
 import { EyeClosedIcon, EyeOpenIcon } from "@radix-ui/react-icons";
 import { login } from "@/actions/login";
 import { toast } from "sonner";
+import { useSearchParams } from "next/navigation";
 
 export const LoginForm = () => {
   const [showPassword, setShowPassword] = useState(false);
-
   const [isPending, startTransition] = useTransition();
+
+  // Just in case we don't allow user to login with the same email from oauth if they have already register an account with credentials
+
+  // const searchParams = useSearchParams();
+  // const [error, setError] = useState<string | null>(null);
+  // const err = searchParams.get("error");
+  // useEffect(() => {
+  //   setError(err);
+  // }, [err]);
+
+  // if (error === "OAuthAccountNotLinked") {
+  //   toast.error("Another account already exists with the same email address!");
+  // }
 
   const form = useForm<z.infer<typeof LoginSchema>>({
     resolver: zodResolver(LoginSchema),
@@ -37,7 +50,6 @@ export const LoginForm = () => {
 
   const onSubmit = (values: z.infer<typeof LoginSchema>) => {
     startTransition(() => {
-      console.log(values);
       login(values)
         .then((data) => {
           if (data?.error) {

@@ -1,14 +1,15 @@
 import type { Metadata } from "next";
 import "./globals.css";
 
+import { SessionProvider } from "next-auth/react";
+import { auth } from "@/auth";
+
 import { inter } from "@/lib/fonts";
 import { cn } from "@/lib/utils";
 
 import { ThemeProvider } from "@/components/theme-provider";
 import { Navbar } from "@/components/navbas";
 import { Toaster } from "@/components/ui/sonner";
-import { auth } from "@/auth";
-import { SessionProvider } from "next-auth/react";
 
 export const metadata: Metadata = {
   title: "Welcome to Auth",
