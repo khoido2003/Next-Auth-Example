@@ -3,10 +3,10 @@ import nodemailer from "nodemailer";
 const transpoter = nodemailer.createTransport({
   host: "smtp.elasticemail.com",
   port: 2525,
-  secure: false,
+  secure: false, // In production, turn secure back to true
   auth: {
-    user: "khoizpro7@proton.me",
-    pass: "F43D8E26FF68A341DA35FB64D57D944C2CB7",
+    user: process.env.ELASTIC_EMAIL_USER,
+    pass: process.env.ELASTIC_EMAIL_PASS,
   },
 });
 
