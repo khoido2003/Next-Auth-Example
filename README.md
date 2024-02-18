@@ -12,7 +12,7 @@ This project showcases user authentication using NextAuth, Typescript, Prisma(Po
 ![Screenshot 1](screenshots/s-1.png)
 _Sign in Page._
 
-![Screenshot 2](screenshots/s-22.png)
+![Screenshot 2](screenshots/s-2.png)
 _Sign up Page._
 
 ## Features
@@ -65,7 +65,7 @@ Make sure you have the following installed before running the project:
    GOOGLE_CLIENT_ID=
    GOOGLE_CLIENT_SECRET=
    GITHUB_CLIENT_ID=
-   GITHUB_CLIENT_SECRET=d
+   GITHUB_CLIENT_SECRET=
    # Add other necessary environment variables for Prisma and NextAuth
    ```
 
