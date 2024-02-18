@@ -5,7 +5,7 @@
 
 # Next.js Authentication Application Example
 
-This project showcases user authentication using NextAuth, Typescript, Prisma(PostgreSql), Shadcn/UI, and Tailwind CSS.
+This project showcases user authentication using AuthJS v5, Typescript, Prisma(PostgreSql), Shadcn/UI, and Tailwind CSS.
 
 ## Screenshots
 
@@ -94,10 +94,11 @@ Make sure you have the following installed before running the project:
 ## Technologies Used
 
 - [Next.js](https://nextjs.org/)
-- [NextAuth](https://next-auth.js.org/)
+- [AuthJS](https://authjs.dev/)
 - [Prisma](https://www.prisma.io/)
 - [Shadcn/UI](https://github.com/shadcn/ui)
 - [Tailwind CSS](https://tailwindcss.com/)
+- [Neon(PostgreSql)](https://neon.tech/)
 
 ## Learn More
 
