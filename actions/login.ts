@@ -8,6 +8,8 @@ import { LoginSchema } from "@/schemas";
 
 import { getUserByEmail } from "@/data/user";
 import { DEFAULT_LOGIN_REDIRECT } from "@/routes";
+import { generateVerificationToken } from "@/lib/tokens";
+import { sendVerificationEmail } from "@/lib/mail";
 
 export const login = async (values: z.infer<typeof LoginSchema>) => {
   // Check if the
@@ -19,11 +21,26 @@ export const login = async (values: z.infer<typeof LoginSchema>) => {
 
   const { email, password, code } = validatedFields.data;
 
-  // Get the user from the provided email`
+  // Get the user from the provided email.
   const existingUser = await getUserByEmail(email);
 
   if (!existingUser || !existingUser.email || !existingUser.password) {
     return { error: "Email does not exist!" };
+  }
+
+  // Checking if the user is already have email verified or not. If not, create a new token and resend it to the user.
+  if (!existingUser.emailVerified) {
+    const verificationToken = await generateVerificationToken(
+      existingUser.email
+    );
+
+    // Sending token through user email
+    await sendVerificationEmail({
+      email: verificationToken.email,
+      token: verificationToken.token,
+    });
+
+    return { success: "Confirmation email sent!" };
   }
 
   // TODO: Implement two factor authentication
