@@ -21,7 +21,7 @@ export const Header = ({ title, label }: HeaderProps) => {
       )}
 
       <div className="gap-y-1 flex flex-col">
-        <h1 className={cn("text-xl font-semibold")}>{title} to Auth</h1>
+        <h1 className={cn("text-xl font-semibold")}>{title}</h1>
         <p className="text-muted-foreground text-xs">{label}</p>
       </div>
     </div>

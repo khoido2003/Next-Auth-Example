@@ -54,7 +54,7 @@ export const RegisterForm = () => {
 
   return (
     <CardWrapper
-      headerTitle="Sign up"
+      headerTitle="Sign Up To Auth"
       headerLabel="Crafting secure and delightful login experiences"
       backButtonLabel="Already have an account?"
       backButtonHref="/auth/login"

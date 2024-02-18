@@ -69,7 +69,7 @@ export const LoginForm = () => {
 
   return (
     <CardWrapper
-      headerTitle="Login"
+      headerTitle="Login To Auth"
       headerLabel="Crafting secure and delightful login experiences"
       backButtonLabel="Don't have an account? Sign up"
       backButtonHref="/auth/register"

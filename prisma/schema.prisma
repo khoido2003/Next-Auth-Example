@@ -52,6 +52,8 @@ model User {
 
   account Account[]
   role    UserRole  @default(USER)
+
+  @@index([email])
 }
 
 model Account {
@@ -83,4 +85,6 @@ model VerificationToken {
   expires DateTime
 
   @@unique([email, token])
+  @@index([email])
+  @@index([token])
 }

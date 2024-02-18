@@ -1,16 +1,15 @@
 import { db } from "./db";
 
 // Find verification token
-export const getVerificationToken = async (token: string) => {
+export const getVerificationTokenByToken = async (token: string) => {
   try {
     const verificationToken = await db.verificationToken.findFirst({
-      where: {
-        token,
-      },
+      where: { token },
     });
 
     return verificationToken;
-  } catch (e) {
+  } catch (err) {
+    console.log(err);
     return null;
   }
 };
