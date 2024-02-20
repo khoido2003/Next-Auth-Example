@@ -44,3 +44,20 @@ export const ResetSchema = z.object({
     message: "Email is required!",
   }),
 });
+
+/////////////////////////////////////////////
+
+export const NewPasswordSchema = z
+  .object({
+    password: z
+      .string()
+      .min(8, { message: "Password must be at least 8 characters" }),
+
+    passwordConfirm: z
+      .string()
+      .min(8, { message: "PasswordConfirm must be at least 8 characters" }),
+  })
+  .refine((data) => data.password === data.passwordConfirm, {
+    message: "Password don't match!",
+    path: ["passwordConfirm"],
+  });
