@@ -78,7 +78,7 @@ export const {
         return token;
       }
 
-      console.log("JWT", token);
+      // console.log("JWT", token);
       return token;
     },
 
@@ -90,7 +90,7 @@ export const {
         session.user.role = token.role as UserRole;
       }
 
-      console.log("Token: ", session);
+      // console.log("Token: ", session);
       return session;
     },
   },
