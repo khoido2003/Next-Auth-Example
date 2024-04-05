@@ -21,12 +21,13 @@ import { Button } from "@/components/ui/button";
 import { EyeClosedIcon, EyeOpenIcon } from "@radix-ui/react-icons";
 import { login } from "@/actions/login";
 import { toast } from "sonner";
-import { useRouter, useSearchParams } from "next/navigation";
-import { useSession } from "next-auth/react";
 
 export const LoginForm = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [isPending, startTransition] = useTransition();
+  const [showTwoFactor, setShowTwoFactor] = useState<
+    string | undefined | boolean
+  >("");
 
   // Just in case we don't allow user to login with the same email from oauth if they have already register an account with credentials
 
@@ -57,9 +58,18 @@ export const LoginForm = () => {
             form.reset();
             toast.error(`Error: ${data.error}`);
           }
+
           if (data?.success) {
             form.reset();
             toast.success(`Success: ${data.success}`);
+          }
+
+          // Add two factor authentication
+          if (data?.twoFactor) {
+            setShowTwoFactor(true);
+            toast.success(
+              "Two Factor Authentication Token sent to your email!"
+            );
           }
         })
         .catch((error) => {
@@ -79,64 +89,88 @@ export const LoginForm = () => {
     >
       <Form {...form}>
         <form className="space-y-4" onSubmit={form.handleSubmit(onSubmit)}>
-          <FormField
-            control={form.control}
-            name="email"
-            render={({ field }) => {
-              return (
+          {showTwoFactor && (
+            <FormField
+              control={form.control}
+              name="code"
+              render={({ field }) => (
                 <FormItem>
+                  <FormLabel>Two Factor Code</FormLabel>
                   <FormControl>
                     <Input
                       {...field}
-                      placeholder="Email"
-                      type="email"
+                      placeholder="123456"
                       disabled={isPending}
                     />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
-              );
-            }}
-          />
+              )}
+            />
+          )}
 
-          <FormField
-            control={form.control}
-            name="password"
-            render={({ field }) => {
-              return (
-                <FormItem>
-                  <FormControl>
-                    <div className="relative">
-                      <Input
-                        {...field}
-                        placeholder="Password"
-                        type={showPassword ? "text" : "password"}
-                        disabled={isPending}
-                      />
+          {!showTwoFactor && (
+            <>
+              {" "}
+              <FormField
+                control={form.control}
+                name="email"
+                render={({ field }) => {
+                  return (
+                    <FormItem>
+                      <FormControl>
+                        <Input
+                          {...field}
+                          placeholder="Email"
+                          type="email"
+                          disabled={isPending}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  );
+                }}
+              />
+              <FormField
+                control={form.control}
+                name="password"
+                render={({ field }) => {
+                  return (
+                    <FormItem>
+                      <FormControl>
+                        <div className="relative">
+                          <Input
+                            {...field}
+                            placeholder="Password"
+                            type={showPassword ? "text" : "password"}
+                            disabled={isPending}
+                          />
 
-                      <span
-                        className="absolute top-2 right-3 cursor-pointer"
-                        onClick={() => {
-                          setShowPassword((v) => !v);
-                        }}
-                      >
-                        {showPassword ? (
-                          <EyeOpenIcon className="w-[1.2rem] h-[1.2rem]" />
-                        ) : (
-                          <EyeClosedIcon className="w-[1.2rem] h-[1.2rem]" />
-                        )}
-                      </span>
-                    </div>
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              );
-            }}
-          />
+                          <span
+                            className="absolute top-2 right-3 cursor-pointer"
+                            onClick={() => {
+                              setShowPassword((v) => !v);
+                            }}
+                          >
+                            {showPassword ? (
+                              <EyeOpenIcon className="w-[1.2rem] h-[1.2rem]" />
+                            ) : (
+                              <EyeClosedIcon className="w-[1.2rem] h-[1.2rem]" />
+                            )}
+                          </span>
+                        </div>
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  );
+                }}
+              />
+            </>
+          )}
 
           <div className="pt-4">
             <Button disabled={isPending} type="submit" variant="login">
-              Login
+              {showTwoFactor ? "Confirm" : "Login"}
             </Button>
           </div>
         </form>

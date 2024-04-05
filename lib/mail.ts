@@ -18,7 +18,7 @@ export const sendVerificationEmail = async ({
   token: string;
 }) => {
   // Create confirmation link to redirect user back to website
-  const confirmLink = `http://localhost:3001/auth/new-verification?token=${token}`;
+  const confirmLink = `http://localhost:3000/auth/new-verification?token=${token}`;
 
   const info = await transpoter.sendMail({
     from: "N-Auth Service <khoizpro7@proton.me>",
@@ -108,6 +108,63 @@ export const sendPasswordResetEmail = async (email: string, token: string) => {
 
 </body>
 </html>
+
+    `,
+  });
+};
+
+export const sendTwoFactorTokenEmail = async (email: string, token: string) => {
+  const info = await transpoter.sendMail({
+    from: "N-Auth Service <khoizpro7@proton.me>",
+    to: email,
+    subject: "Your N-Auth Authentication Service 2FA",
+    html: `
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Two Factor Authentication</title>
+    </head>
+    <body style="font-family: Arial, sans-serif; background-color: #f4f4f4; margin: 0; padding: 0;">
+    
+        <table role="presentation" cellspacing="0" cellpadding="0" style="width: 100%; border-collapse: collapse;">
+            <tr>
+                <td align="center" style="padding: 30px 0;">
+    
+                    <table role="presentation" cellspacing="0" cellpadding="0" style="width: 600px; margin: 0 auto; background-color: #ffffff; border-radius: 5px; overflow: hidden; box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);">
+    
+                        <!-- Header -->
+                        <tr>
+                            <td bgcolor="#007BFF" style="padding: 20px; text-align: center; color: #ffffff;">
+                                <h1>Two Factor Authentication</h1>
+                            </td>
+                        </tr>
+    
+                        <!-- Main Content -->
+                        <tr>
+                            <td style="padding: 20px;">
+                                <p>Hello,</p>
+                                <p>Your Two Factor Authentication (2FA) code is: <strong>${token}</strong></p>
+                                <p>If you didn't request this code, please ignore this email.</p>
+                            </td>
+                        </tr>
+    
+                        <!-- Footer -->
+                        <tr>
+                            <td style="text-align: center; padding: 10px; background-color: #f4f4f4;">
+                                <p>© 2024 N-Auth Service. All rights reserved.</p>
+                            </td>
+                        </tr>
+    
+                    </table>
+    
+                </td>
+            </tr>
+        </table>
+    
+    </body>
+    </html>
 
     `,
   });
