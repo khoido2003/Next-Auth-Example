@@ -8,8 +8,14 @@ import { LoginSchema } from "@/schemas";
 
 import { getUserByEmail } from "@/data/user";
 import { DEFAULT_LOGIN_REDIRECT } from "@/routes";
-import { generateVerificationToken } from "@/lib/tokens";
+import {
+  generateTwoFactorToken,
+  generateVerificationToken,
+} from "@/lib/tokens";
 import { sendVerificationEmail } from "@/lib/mail";
+import { getTwoFactorTokenByEmail } from "@/data/two-factor-token";
+import { db } from "@/lib/db";
+import { getTwoFactorConfirmationByUserId } from "@/data/getTwoFactorConfirmationByUserId";
 
 export const login = async (values: z.infer<typeof LoginSchema>) => {
   // Check if the
@@ -44,6 +50,51 @@ export const login = async (values: z.infer<typeof LoginSchema>) => {
   }
 
   // TODO: Implement two factor authentication
+  if (existingUser.isTwoFactorEnabled && existingUser.email) {
+    if (code) {
+      // Vertify code
+      const twoFactorToken = await getTwoFactorTokenByEmail(existingUser.email);
+
+      if (!twoFactorToken) {
+        return { error: "Invalid code!" };
+      }
+
+      if (twoFactorToken.token !== code) {
+        return { error: "Invalid code!" };
+      }
+
+      const hasExpired = new Date(twoFactorToken.expires) < new Date();
+
+      if (hasExpired) {
+        return { error: "Code has expired!" };
+      }
+
+      // delete the twoFactorToken that has been used
+      await db.twoFactorToken.delete({
+        where: { id: twoFactorToken.id },
+      });
+
+      // delete the old confirmation
+      const existingConfirmation = await getTwoFactorConfirmationByUserId(
+        existingUser.id
+      );
+
+      if (existingConfirmation) {
+        await db.twoFactorConfirmation.delete({
+          where: { id: existingConfirmation.id },
+        });
+      }
+
+      // Create a new confirmation
+      await db.twoFactorConfirmation.create({
+        data: {
+          userId: existingUser.id,
+        },
+      });
+    } else {
+      const twoFactorToken = await generateTwoFactorToken(existingUser.email);
+    }
+  }
 
   try {
     await signIn("credentials", {

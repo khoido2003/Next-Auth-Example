@@ -10,6 +10,7 @@ import {
   publicRoutes,
 } from "@/routes";
 
+// @ts-ignore
 export default auth((req) => {
   const { nextUrl } = req;
   console.log(nextUrl);
