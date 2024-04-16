@@ -1,4 +1,4 @@
-import NextAuth from "next-auth";
+import NextAuth, { User } from "next-auth";
 import { PrismaAdapter } from "@auth/prisma-adapter";
 
 import authConfig from "./auth.config";
@@ -7,6 +7,7 @@ import { db } from "./lib/db";
 import { getUserById } from "./data/user";
 import { UserRole } from "@prisma/client";
 import { getTwoFactorConfirmationByUserId } from "./data/getTwoFactorConfirmationByUserId";
+import { getAccountByUserId } from "./data/account";
 
 ////////////////////////////////////////////
 
@@ -93,7 +94,16 @@ export const {
         return token;
       }
 
-      // console.log("JWT", token);
+      const existingAccount = await getAccountByUserId(existingUser.id);
+
+      // Update the token manually in the settingss
+      token.isOAuth = !!existingAccount;
+      token.name = existingUser.name;
+      token.email = existingUser.email;
+      token.role = existingUser.role;
+      token.isTwoFactorEnabled = existingUser.isTwoFactorEnabled;
+
+      // console.log(token);
       return token;
     },
 
@@ -105,7 +115,12 @@ export const {
         session.user.role = token.role as UserRole;
       }
 
-      // console.log("Token: ", session);
+      if (session.user) {
+        session.user.isTwoFactorEnabled = token.isTwoFactorEnabled as boolean;
+        session.user.name = token.name;
+        session.user.email = token.email as string;
+        session.user.isOAuth = token.isOAuth as boolean;
+      }
       return session;
     },
   },
