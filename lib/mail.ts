@@ -1,5 +1,7 @@
 import nodemailer from "nodemailer";
 
+const domain = process.env.NEXT_PUBLIC_APP_URL;
+
 const transpoter = nodemailer.createTransport({
   host: "smtp.elasticemail.com",
   port: 2525,
@@ -18,7 +20,7 @@ export const sendVerificationEmail = async ({
   token: string;
 }) => {
   // Create confirmation link to redirect user back to website
-  const confirmLink = `http://localhost:3000/auth/new-verification?token=${token}`;
+  const confirmLink = `${domain}/auth/new-verification?token=${token}`;
 
   const info = await transpoter.sendMail({
     from: "N-Auth Service <khoizpro7@proton.me>",
@@ -54,7 +56,7 @@ export const sendVerificationEmail = async ({
 };
 
 export const sendPasswordResetEmail = async (email: string, token: string) => {
-  const resetLink = `http:localhost:3001/auth/new-password?token=${token}`;
+  const resetLink = `${domain}/auth/new-password?token=${token}`;
 
   const info = await transpoter.sendMail({
     from: "N-Auth Service <khoizpro7@proton.me>",

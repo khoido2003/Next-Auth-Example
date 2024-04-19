@@ -22,7 +22,7 @@ export default function Home() {
           <p className="text-xs">Simple authentication service</p>
         </div>
 
-        <LoginButton>
+        <LoginButton mode="modal" asChild>
           <Button size="lg">Sign in</Button>
         </LoginButton>
       </div>

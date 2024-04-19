@@ -5,7 +5,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { LoginSchema } from "@/schemas";
 
 import { useForm } from "react-hook-form";
-import { useEffect, useState, useTransition } from "react";
+import { useState, useTransition } from "react";
 
 import {
   Form,
@@ -21,6 +21,7 @@ import { Button } from "@/components/ui/button";
 import { EyeClosedIcon, EyeOpenIcon } from "@radix-ui/react-icons";
 import { login } from "@/actions/login";
 import { toast } from "sonner";
+import { useSearchParams } from "next/navigation";
 
 export const LoginForm = () => {
   const [showPassword, setShowPassword] = useState(false);
@@ -28,6 +29,9 @@ export const LoginForm = () => {
   const [showTwoFactor, setShowTwoFactor] = useState<
     string | undefined | boolean
   >("");
+  const searchParams = useSearchParams();
+
+  const callbackUrl = searchParams.get("callbackUrl");
 
   // Just in case we don't allow user to login with the same email from oauth if they have already register an account with credentials
 
@@ -52,7 +56,7 @@ export const LoginForm = () => {
 
   const onSubmit = (values: z.infer<typeof LoginSchema>) => {
     startTransition(() => {
-      login(values)
+      login(values, callbackUrl)
         .then((data) => {
           if (data?.error) {
             form.reset();
