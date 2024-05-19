@@ -55,7 +55,10 @@ export const UserInfo = ({ user, label }: UserInFoProps) => {
         <div className="flex flex-row items-center justify-between rounded-lg border p-3 shadow-sm ">
           <p className="text-sm font-medium">Two Factor Authentication</p>
 
-          <Badge variant={user?.isTwoFactorEnabled ? "success" : "destructive"}>
+          <Badge
+            variant={user?.isTwoFactorEnabled ? "success" : "destructive"}
+            className="cursor-pointer"
+          >
             {user?.isTwoFactorEnabled ? "ON" : "OFF"}
           </Badge>
         </div>
