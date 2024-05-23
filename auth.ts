@@ -114,7 +114,6 @@ export const {
       if (session.user && token.role) {
         session.user.role = token.role as UserRole;
       }
-
       if (session.user) {
         session.user.isTwoFactorEnabled = token.isTwoFactorEnabled as boolean;
         session.user.name = token.name;
