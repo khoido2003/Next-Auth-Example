@@ -16,6 +16,7 @@ import { sendTwoFactorTokenEmail, sendVerificationEmail } from "@/lib/mail";
 import { getTwoFactorTokenByEmail } from "@/data/two-factor-token";
 import { db } from "@/lib/db";
 import { getTwoFactorConfirmationByUserId } from "@/data/getTwoFactorConfirmationByUserId";
+import { redirect } from "next/navigation";
 
 export const login = async (
   values: z.infer<typeof LoginSchema>,
@@ -109,7 +110,10 @@ export const login = async (
       redirectTo: DEFAULT_LOGIN_REDIRECT,
     });
 
-    return { success: "Successfully login!" };
+    redirect(DEFAULT_LOGIN_REDIRECT);
+    return {
+      success: "Successfully login!",
+    };
   } catch (error) {
     if (error instanceof AuthError) {
       switch (error.type) {
